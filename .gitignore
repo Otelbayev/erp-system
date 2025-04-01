@@ -1,0 +1,14 @@
+# .env faylini gitda kuzatishni o'chiradi
+.env
+
+# Node.js modullari
+node_modules/
+
+# MacOS uchun maxsus fayllar
+.DS_Store
+
+# VSCode ish fayllari
+.vscode/
+
+# Log fayllar
+*.log
