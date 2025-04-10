@@ -10,7 +10,7 @@ router.post(
   userController.createUser
 );
 router.put(
-  "/id",
+  "/:id",
   authMiddleware.allowRole(["superadmin"]),
   userController.updateUserById
 );

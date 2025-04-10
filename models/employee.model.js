@@ -7,6 +7,7 @@ const employeeSchema = new Schema(
     patronymic: { type: String, required: true },
     image: { type: String },
     start_date: { type: Date, required: true },
+    isDeleted: { type: Boolean, default: false },
     employee_type_id: {
       type: Schema.Types.ObjectId,
       ref: "EmployeeType",

@@ -3,6 +3,7 @@ import { Schema, model } from "mongoose";
 const roles = [
   "superadmin",
   "admin",
+  "accountant",
   "storekeeper",
   "tsex-manager",
   "resultkeeper",

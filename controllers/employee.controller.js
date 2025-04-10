@@ -60,7 +60,7 @@ class EmployeeController {
         return res.status(404).json({ message: "Employee not found" });
       }
 
-      res.status(200).json({ employee });
+      res.status(200).json(employee);
     } catch (error) {
       res
         .status(500)
@@ -70,8 +70,14 @@ class EmployeeController {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { name, surname, patronymic, start_date, employee_type_id } =
-        req.body;
+      const {
+        name,
+        surname,
+        patronymic,
+        start_date,
+        employee_type_id,
+        isDeleted,
+      } = req.body;
 
       const updatedData = {
         name,
@@ -79,6 +85,7 @@ class EmployeeController {
         patronymic,
         start_date,
         employee_type_id,
+        isDeleted,
       };
 
       if (req.file) {
@@ -153,6 +160,47 @@ class EmployeeController {
       res
         .status(500)
         .json({ message: "Error retrieving employees", error: error.message });
+    }
+  }
+
+  async updateAcc(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, surname, patronymic, start_date, employee_type_id } =
+        req.body;
+
+      const updatedData = {
+        name,
+        surname,
+        patronymic,
+        start_date,
+        employee_type_id,
+      };
+
+      if (req.file) {
+        updatedData.image = req.file.path;
+      }
+
+      const updatedEmployee = await Employee.findByIdAndUpdate(
+        { _id: id, isDeleted: false },
+        { $set: updatedData },
+        { new: true }
+      );
+
+      if (!updatedEmployee) {
+        return res
+          .status(404)
+          .json({ message: "Employee not found or deleted" });
+      }
+
+      res.status(200).json({
+        message: "Employee updated successfully",
+        employee: updatedEmployee,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error updating employee", error: error.message });
     }
   }
 }

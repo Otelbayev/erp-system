@@ -80,12 +80,30 @@ class UserController {
   }
   async updateProfile(req, res) {
     try {
-      const user = await User.findByIdAndUpdate(req.user.userId, req.body, {
-        new: true,
-      });
+      const { login, oldPassword, newPassword } = req.body;
+
+      const user = await User.findById(req.user.userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      res.status(200).json(user);
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Old password is incorrect" });
+      }
+
+      if (login) {
+        user.login = login;
+      }
+
+      if (newPassword) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+      }
+
+      await user.save();
+
+      const { password, ...userData } = user.toObject();
+
+      res.status(200).json(userData);
     } catch (error) {
       res.status(500).json({ message: "Server error!!", error: error.message });
     }
